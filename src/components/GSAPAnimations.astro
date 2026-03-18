@@ -1,0 +1,120 @@
+---
+// GSAPAnimations.astro — global scroll reveal animations
+---
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Integrate with Lenis when available
+  const tryConnect = () => {
+    const lenis = (window as any).__lenis;
+    if (lenis) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time: number) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+    } else {
+      setTimeout(tryConnect, 100);
+    }
+  };
+  tryConnect();
+
+  // ---- Reveal animations ----
+  gsap.utils.toArray<HTMLElement>('.reveal').forEach((el) => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1, y: 0,
+        duration: 1,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      }
+    );
+  });
+
+  gsap.utils.toArray<HTMLElement>('.reveal-left').forEach((el) => {
+    gsap.fromTo(el,
+      { opacity: 0, x: -50 },
+      {
+        opacity: 1, x: 0,
+        duration: 1,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      }
+    );
+  });
+
+  gsap.utils.toArray<HTMLElement>('.reveal-right').forEach((el) => {
+    gsap.fromTo(el,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1, x: 0,
+        duration: 1,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      }
+    );
+  });
+
+  // ---- Counter animations ----
+  gsap.utils.toArray<HTMLElement>('.stat-number[data-target]').forEach((el) => {
+    const target = parseFloat(el.dataset.target ?? '0');
+    const suffix = el.dataset.suffix ?? '';
+    gsap.fromTo({ val: 0 }, { val: target },
+      {
+        duration: 2.5,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 80%', once: true },
+        onUpdate: function () {
+          el.textContent = Math.round(this.targets()[0].val) + suffix;
+        },
+      }
+    );
+  });
+
+  // ---- Staggered card reveals ----
+  gsap.utils.toArray<HTMLElement>('.stagger-group').forEach((group) => {
+    const children = group.querySelectorAll<HTMLElement>('.stagger-item');
+    gsap.fromTo(children,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1, y: 0,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: group, start: 'top 80%', once: true },
+      }
+    );
+  });
+
+  // ---- Hero title word-by-word ----
+  const heroTitle = document.querySelector<HTMLElement>('.hero-title');
+  if (heroTitle) {
+    const words = heroTitle.innerHTML.split(' ').map(w => `<span style="display:inline-block;">${w}</span>`);
+    heroTitle.innerHTML = words.join(' ');
+    gsap.fromTo(heroTitle.querySelectorAll('span'),
+      { opacity: 0, y: 30, rotateX: -40 },
+      {
+        opacity: 1, y: 0, rotateX: 0,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: 'expo.out',
+        delay: 0.3,
+      }
+    );
+  }
+
+  // ---- Nav fade in ----
+  gsap.fromTo('.nav',
+    { opacity: 0, y: -20 },
+    { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', delay: 0.1 }
+  );
+
+  // ---- Hero content fade in ----
+  gsap.fromTo(['.hero-eyebrow', '.hero-subtitle', '.hero-cta'],
+    { opacity: 0, y: 25 },
+    { opacity: 1, y: 0, duration: 0.9, stagger: 0.15, ease: 'expo.out', delay: 0.5 }
+  );
+</script>

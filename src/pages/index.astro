@@ -1,0 +1,426 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroCanvas from '../components/HeroCanvas.astro';
+import GSAPAnimations from '../components/GSAPAnimations.astro';
+import AIChatAgent from '../components/AIChatAgent.astro';
+import ScrollVideo from '../components/ScrollVideo.astro';
+
+const experience = [
+  {
+    role: 'Software Engineer',
+    company: 'ZAZTECK',
+    period: '10/2023 - Present',
+    description: 'Providing freelance web development services for robust business web applications. Delivering responsive, performance-optimized, and SEO-friendly solutions while coordinating directly with global clients to translate complex requirements into end-to-end scalable architectures.'
+  },
+  {
+    role: 'Software Engineer',
+    company: 'Ammag Technologies',
+    period: '01/2023 - 10/2023',
+    description: 'Collaborated on full-stack web and mobile applications leveraging React, Node.js, and MongoDB. Drastically improved RESTful API integrations, real-time data handling, and deployment pipelines using modern cloud services in an agile environment.'
+  },
+  {
+    role: 'Intern',
+    company: 'W Group',
+    period: '01/2022 - 04/2022',
+    description: 'Contributed to various software solutions, building a strong foundation in frontend architectures, component-based design, and systematic debugging.'
+  }
+];
+
+const projects = [
+  {
+    title: '1CM Website & DApp',
+    tech: 'React, Node, Web3',
+    description: 'Developed an extensive admin panel for loyalty services and a robust decentralized application (DApp) for 1CM Coin, featuring secure wallet generation, optimized token transfers, and deep blockchain analytics.'
+  },
+  {
+    title: '1Cm Loyalty App',
+    tech: 'React Native, Node',
+    description: 'Engineered cross-platform loyalty features including QR code scanning, dynamic user tiers, points redemption, and seamless backend integration ensuring real-time data synchronization.'
+  },
+  {
+    title: 'Maker DAO Replica',
+    tech: 'Solidity, Web3, DeFi',
+    description: 'Formulated a comprehensive DeFi application inspired by MakerDAO. Implemented secure smart contracts, stablecoin minting logic, MetaMask integration, and blockchain-based decentralized governance.'
+  },
+  {
+    title: 'REDLC Scanner',
+    tech: 'React Native, REST API',
+    description: 'Built a lightweight, highly-performant electronic resource management scanner application featuring real-time barcode processing, offline storage schemas, and automated data synchronization feeds.'
+  }
+];
+
+const skills = [
+  'React.js', 'Node.js', 'React Native', 'Typescript', 'MongoDB', 
+  'PostgreSQL', 'Redux', 'Web3.js', 'RESTful APIs', 'Tailwind/CSS'
+];
+---
+
+<Layout
+  title="Talha Ali — Full Stack Developer"
+  description="Portfolio of Talha Ali, a Full Stack Developer specializing in React, Node.js, and Web3."
+>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo">Talha<span>Ali</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="mailto:talhaali7271@gmail.com" class="btn btn-outline" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Let's Talk</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Video Background -->
+  <HeroCanvas />
+
+  <!-- Hero Section -->
+  <section class="hero section" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 100vh;">
+    <div class="container hero-content">
+      <div class="hero-top-pill reveal">Hello! I am glad you are here</div>
+      
+      <h1 class="hero-title reveal" style="font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 1.5rem 0 3rem;">
+        Choose your experience
+      </h1>
+      
+      <div class="experience-cards reveal">
+        <!-- Explore Portfolio Card -->
+        <a href="#about" class="exp-card">
+          <div class="exp-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <h3>Explore Portfolio</h3>
+          <p>Take a guided tour through my curated projects, technical expertise, and career journey.</p>
+        </a>
+
+        <!-- AI Assistant Card (Custom Trigger) -->
+        <div class="exp-card ai-card" id="ai-trigger-hero">
+          <div class="glow-orb-hero"></div>
+          <div class="exp-icon ai-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <h3>AI Assistant</h3>
+          <p>Skip the scroll. Talk to my AI twin for instant answers about my skills and availability.</p>
+        </div>
+      </div>
+
+      <div class="hero-bottom-text reveal">
+        TALHA ALI • FULL STACK DEVELOPER
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Scroll Video Animation -->
+  <ScrollVideo />
+
+  <!-- Skills / About -->
+  <section id="about" class="section" style="position:relative; z-index:1;">
+    <div class="container">
+      <div class="about-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+        
+        <!-- Intro & Skills -->
+        <div class="reveal-left">
+          <span class="section-tag">About Me</span>
+          <h2 style="margin-bottom: 1.5rem;">Hello, I'm <span class="gradient-text">Talha Ali</span></h2>
+          <p style="margin-bottom: 1rem; color: #fff; font-size: 1.1rem; max-width: 100%;">
+            I am a passionate Full Stack Developer with extensive expertise in React, React Native, and Node.js. My core focus is architecting scalable web and mobile applications that deliver an exceptional user experience while maintaining robust, clean, and secure code.
+          </p>
+          <p style="margin-bottom: 2rem; max-width: 100%;">
+            Over the years, I've collaborated with cross-functional global teams to transform complex system requirements into end-to-end cloud solutions. Whether it's integrating Web3 smart contracts, optimizing high-traffic REST APIs, or leading frontend UI overhauls, I thrive on solving difficult technical challenges.
+          </p>
+          
+          <h4 style="margin-bottom: 1rem; color: var(--clr-accent); font-family: var(--font-body); letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.85rem;">Technical Arsenal</h4>
+          <div class="skills-wrap" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+            {skills.map(skill => (
+              <div class="skill-badge glass-card">{skill}</div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Picture / Visuals -->
+        <div class="reveal-right" style="position: relative; display: flex; justify-content: center;">
+          <div class="profile-pic-wrapper">
+            <img src="/Image.jfif" alt="Talha Ali" class="profile-pic" />
+            <div class="pic-glow"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience" class="section" style="position:relative; z-index:1;">
+    <div class="container">
+      <div class="section-header reveal-left">
+        <span class="section-tag">Career Journey</span>
+        <h2>Professional<br /><span class="gradient-text">Experience</span></h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="services-grid stagger-group" style="margin-top: 3rem;">
+        {experience.map(exp => (
+          <div class="glass-card service-card stagger-item">
+            <span style="font-size: 0.8rem; color: var(--clr-accent); letter-spacing: 0.1em; text-transform:uppercase;">{exp.period}</span>
+            <h3 style="margin: 0.5rem 0 0.25rem;">{exp.role}</h3>
+            <div style="font-weight: 600; font-size: 0.95rem; color: #fff; margin-bottom: 1rem;">@ {exp.company}</div>
+            <p>{exp.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="section" style="position:relative; z-index:1;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Featured Work</span>
+        <h2>Selected<br /><span class="gradient-text">Projects</span></h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="services-grid stagger-group" style="margin-top: 3rem;">
+        {projects.map(proj => (
+          <div class="glass-card service-card stagger-item">
+             <span style="font-size: 0.8rem; color: var(--clr-accent); letter-spacing: 0.05em;">{proj.tech}</span>
+             <h3 style="margin-top: 0.5rem;">{proj.title}</h3>
+             <p style="margin-top: 1rem;">{proj.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="section" style="position:relative; z-index:1;">
+    <div class="container reveal">
+      <div class="section-header">
+        <span class="section-tag">Get In Touch</span>
+        <h2>Let's build<br /><span class="gradient-text">Something Great</span></h2>
+        <div class="divider"></div>
+        <p>I'm currently available for freelance projects and full-time opportunities. Drop me a line and I'll get back to you as soon as possible.</p>
+      </div>
+
+      <div class="glass-card" style="margin-top: 3rem; padding: 3rem; max-width: 700px;">
+        <form style="display: flex; flex-direction: column; gap: 1.5rem;" onsubmit="event.preventDefault(); alert('Form logic goes here!');">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <input type="text" placeholder="Name" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
+            <input type="email" placeholder="Email" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
+          </div>
+          <input type="text" placeholder="Subject" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
+          <textarea placeholder="Your Message" rows="5" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem; resize: vertical;"></textarea>
+          <button type="submit" class="btn btn-primary" style="align-self: flex-start; justify-content: center;">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="nav-logo" style="margin-bottom:0.5rem;">Talha<span style="color:var(--clr-accent)">Ali</span></div>
+        <p class="footer-copy">© {new Date().getFullYear()} Talha Ali. Based in Lahore, Pakistan.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="mailto:talhaali7271@gmail.com" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          talhaali7271@gmail.com
+        </a></li>
+        <li><a href="tel:+923227271950" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          +92 322 7271950
+        </a></li>
+        <li><a href="https://linkedin.com/in/m-talha-ali" target="_blank" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          LinkedIn
+        </a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- AI Assistant Modal -->
+  <AIChatAgent showTrigger={false} />
+
+  <!-- GSAP Animations -->
+  <GSAPAnimations />
+</Layout>
+
+<style>
+  /* --- Hero Screen Styles --- */
+  .hero-top-pill {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: rgba(200, 169, 126, 0.1);
+    border: 1px solid rgba(200, 169, 126, 0.3);
+    border-radius: 100px;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .experience-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .exp-card {
+    position: relative;
+    width: 320px;
+    padding: 2.5rem 2rem;
+    background: rgba(13, 13, 20, 0.5); /* Matching deeper glass style */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s var(--ease-smooth);
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .exp-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(200, 169, 126, 0.4);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .exp-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--clr-accent);
+  }
+
+  .ai-card .ai-icon {
+    background: var(--clr-accent);
+    color: #050508;
+    box-shadow: 0 0 20px rgba(200, 169, 126, 0.4);
+  }
+
+  .glow-orb-hero {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(200, 169, 126, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+    animation: pulseOrb 4s infinite alternate ease-in-out;
+  }
+
+  .exp-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: #fff;
+  }
+
+  .exp-card p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .hero-bottom-text {
+    margin-top: 4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+  }
+
+  /* --- Profile Picture Styles --- */
+  .profile-pic-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 4/5;
+    border-radius: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+  }
+  
+  .profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 1.5rem;
+    transform: scale(1.08);
+    filter: grayscale(20%) contrast(110%);
+    transition: filter 0.4s var(--ease-smooth);
+  }
+
+  .profile-pic-wrapper:hover .profile-pic {
+    filter: grayscale(0%) contrast(100%);
+  }
+
+  .pic-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(200, 169, 126, 0.15) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* --- Misc --- */
+  .skill-badge {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.02);
+  }
+  .skill-badge:hover {
+    border-color: var(--clr-accent);
+    color: var(--clr-accent);
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .profile-pic-wrapper {
+      max-width: 300px;
+      margin-top: 2rem;
+    }
+  }
+</style>
+
+<script>
+  // Link the new Hero AI Card to the AI Modal
+  const heroTrigger = document.getElementById('ai-trigger-hero');
+  heroTrigger?.addEventListener('click', () => {
+    const modal = document.getElementById('ai-modal');
+    if (modal) {
+      modal.classList.add('active');
+      const input = document.getElementById('chat-input');
+      if (input) setTimeout(() => input.focus(), 100);
+    }
+  });
+</script>

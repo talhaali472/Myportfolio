@@ -1,0 +1,537 @@
+---
+// CyberpunkAIChatAgent.astro — Full-screen terminal style AI Assistant
+const { showTrigger = true } = Astro.props;
+---
+
+<!-- Trigger Button (placed in hero or elsewhere) -->
+{showTrigger && (
+  <div class="ai-trigger-container" id="ai-trigger">
+    <div class="glow-orb"></div>
+    <button class="ai-trigger-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </button>
+    <div class="ai-trigger-text">
+      <h3>AI Assistant</h3>
+      <p>Skip the scroll. Talk to my AI twin for instant answers about my skills and experience.</p>
+    </div>
+  </div>
+)}
+
+<!-- Full Screen Modal Overlay -->
+<div id="ai-modal" class="ai-modal">
+  <div class="ai-terminal">
+    
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+      <div class="header-left">
+        <div class="status-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div>
+          <h2>SYSTEM ASSISTANT</h2>
+          <span class="protocol-status">PROTOCOL ACTIVE</span>
+        </div>
+      </div>
+      <button id="terminal-close" class="btn-terminate">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        TERMINATE SESSION
+      </button>
+    </div>
+
+    <!-- Terminal Output -->
+    <div class="terminal-body" id="chat-messages">
+      <div class="bot-msg-wrapper">
+        <div class="msg-label">AI RESPONSE</div>
+        <div class="msg bot-msg">
+          Welcome! ✋ I'm here to help you explore Talha's work, his professional journey, and his technical skills. What would you like to know more about?
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Input Area -->
+    <div class="terminal-footer">
+      
+      <!-- Command Suggestions -->
+      <div class="command-suggestions">
+        <button class="cmd-btn" data-cmd="Who is Talha?">WHO IS TALHA?</button>
+        <button class="cmd-btn" data-cmd="What are his skills?">WHAT ARE HIS SKILLS?</button>
+        <button class="cmd-btn" data-cmd="Show me his experience">SHOW ME HIS EXPERIENCE</button>
+        <button class="cmd-btn" data-cmd="How to contact him?">HOW TO CONTACT HIM?</button>
+      </div>
+
+      <!-- Input Field -->
+      <form id="chat-form" class="cmd-input-wrapper">
+        <span class="cmd-prompt">&gt;_</span>
+        <input type="text" id="chat-input" placeholder="Input command..." autocomplete="off" />
+        <button type="submit" id="chat-send" class="cmd-submit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* --- Trigger Button (Hero) --- */
+  .ai-trigger-container {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 3rem;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .glow-orb {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(200, 169, 126, 0.35) 0%, rgba(200, 169, 126, 0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+    animation: pulseOrb 4s infinite alternate ease-in-out;
+  }
+
+  @keyframes pulseOrb {
+    0% { transform: translateX(-50%) scale(0.9); opacity: 0.7; }
+    100% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+  }
+
+  .ai-trigger-btn {
+    width: 4rem;
+    height: 4rem;
+    background: var(--clr-accent);
+    color: #050508;
+    border: none;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(200, 169, 126, 0.35);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .ai-trigger-container:hover .ai-trigger-btn {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 40px rgba(200, 169, 126, 0.5);
+  }
+
+  .ai-trigger-text h3 {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .ai-trigger-text p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 250px;
+    margin: 0 auto;
+    line-height: 1.4;
+  }
+
+  /* --- Full Screen Modal --- */
+  .ai-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(5, 5, 8, 0.9);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .ai-modal.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* --- Terminal Window --- */
+  .ai-terminal {
+    width: 100%;
+    max-width: 1000px;
+    height: 85vh;
+    background: var(--clr-surface);
+    border: 1px solid rgba(200, 169, 126, 0.2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    transform: scale(0.98) translateY(20px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+
+  .ai-modal.active .ai-terminal {
+    transform: scale(1) translateY(0);
+  }
+
+  /* --- Header --- */
+  .terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .status-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(200, 169, 126, 0.12);
+    color: var(--clr-accent);
+    border: 1px solid rgba(200, 169, 126, 0.3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .terminal-header h2 {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin: 0 0 0.25rem 0;
+    font-family: var(--font-heading);
+  }
+
+  .protocol-status {
+    font-size: 0.7rem;
+    color: var(--clr-accent);
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  .btn-terminate {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-terminate:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  /* --- Body / Messages --- */
+  .terminal-body {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: radial-gradient(circle at 50% 100%, rgba(200, 169, 126, 0.08) 0%, transparent 60%);
+  }
+
+  .terminal-body::-webkit-scrollbar { width: 6px; }
+  .terminal-body::-webkit-scrollbar-thumb { background: rgba(200, 169, 126, 0.25); border-radius: 3px; }
+
+  .bot-msg-wrapper {
+    align-self: flex-start;
+    max-width: 85%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.25rem;
+    position: relative;
+    animation: slideIn 0.4s ease;
+  }
+
+  .msg-label {
+    position: absolute;
+    top: -10px;
+    left: 1rem;
+    background: rgba(13, 13, 20, 0.9);
+    color: var(--clr-accent);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid rgba(200, 169, 126, 0.3);
+  }
+
+  .bot-msg {
+    color: #e8e8f0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .user-msg {
+    align-self: flex-end;
+    background: rgba(200, 169, 126, 0.12);
+    color: #fff;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid rgba(200, 169, 126, 0.35);
+    border-bottom-right-radius: 2px;
+    font-size: 0.95rem;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Footer / Inputs --- */
+  .terminal-footer {
+    padding: 1.5rem 2rem;
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .command-suggestions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cmd-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cmd-btn:hover {
+    border-color: var(--clr-accent);
+    color: var(--clr-accent);
+    background: rgba(200, 169, 126, 0.08);
+  }
+
+  .cmd-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #050508;
+    border: 1px solid rgba(200, 169, 126, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    position: relative;
+  }
+
+  .cmd-input-wrapper::before, .cmd-input-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--clr-accent);
+  }
+  .cmd-input-wrapper::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .cmd-input-wrapper::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+  .cmd-prompt {
+    color: var(--clr-accent);
+    font-weight: 700;
+    margin-right: 0.75rem;
+  }
+
+  #chat-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: "Cascadia Code", "Fira Code", monospace;
+    font-size: 0.95rem;
+  }
+
+  #chat-input:focus { outline: none; }
+
+  .cmd-submit {
+    background: rgba(200, 169, 126, 0.2);
+    border: none;
+    color: var(--clr-accent);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .cmd-submit:hover {
+    background: rgba(200, 169, 126, 0.35);
+  }
+
+  /* --- Typing Indicator --- */
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    height: 24px;
+  }
+  .typing-indicator span {
+    width: 6px; height: 6px;
+    background: var(--clr-accent);
+    border-radius: 50%;
+    animation: blink 1.4s infinite both;
+  }
+  .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+  .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+  
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.2); }
+  }
+</style>
+
+<script>
+  const trigger = document.getElementById('ai-trigger');
+  const modal = document.getElementById('ai-modal');
+  const closeBtn = document.getElementById('terminal-close');
+  const form = document.getElementById('chat-form') as HTMLFormElement;
+  const input = document.getElementById('chat-input') as HTMLInputElement;
+  const messagesContainer = document.getElementById('chat-messages');
+  const cmdButtons = document.querySelectorAll('.cmd-btn');
+
+  // Open/Close logic
+  trigger?.addEventListener('click', () => {
+    modal?.classList.add('active');
+    setTimeout(() => input?.focus(), 100);
+  });
+  
+  closeBtn?.addEventListener('click', () => {
+    modal?.classList.remove('active');
+  });
+
+  // Suggestion Buttons
+  cmdButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cmd = (btn as HTMLElement).dataset.cmd;
+      if (cmd && input) {
+        input.value = cmd;
+        form.dispatchEvent(new Event('submit'));
+      }
+    });
+  });
+
+  // Handle submit
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    // 1. Add user message
+    addUserMessage(text);
+    input.value = '';
+
+    // 2. Add loader
+    const typingId = 'typing-' + Date.now();
+    addBotLoader(typingId);
+
+    try {
+      const resp = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+
+      removeBotLoader(typingId);
+
+      if (resp.ok) {
+        const data = await resp.json();
+        addBotMessage(data.reply);
+      } else {
+        addBotMessage("SYSTEM ERROR: Unable to contact LLM backend.");
+      }
+    } catch (err) {
+      removeBotLoader(typingId);
+      addBotMessage("NETWORK OFFLINE: Connection refused.");
+    }
+  });
+
+  function addUserMessage(text: string) {
+    if (!messagesContainer) return;
+    const div = document.createElement('div');
+    div.className = `msg user-msg`;
+    div.textContent = text;
+    messagesContainer.appendChild(div);
+    scrollToBottom();
+  }
+
+  function addBotMessage(text: string) {
+    if (!messagesContainer) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bot-msg-wrapper';
+    
+    wrapper.innerHTML = `
+      <div class="msg-label">AI RESPONSE</div>
+      <div class="msg bot-msg">${text.replace(/\n/g, '<br/>')}</div>
+    `;
+    
+    messagesContainer.appendChild(wrapper);
+    scrollToBottom();
+  }
+
+  function addBotLoader(id: string) {
+    if (!messagesContainer) return;
+    const wrapper = document.createElement('div');
+    wrapper.id = id;
+    wrapper.className = 'bot-msg-wrapper';
+    
+    wrapper.innerHTML = `
+      <div class="msg-label">PROCESSING...</div>
+      <div class="msg bot-msg">
+        <div class="typing-indicator"><span></span><span></span><span></span></div>
+      </div>
+    `;
+    
+    messagesContainer.appendChild(wrapper);
+    scrollToBottom();
+  }
+
+  function removeBotLoader(id: string) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function scrollToBottom() {
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+</script>
+

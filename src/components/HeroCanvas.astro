@@ -1,0 +1,128 @@
+---
+// HeroCanvas.astro — Three.js animated particle field
+---
+
+<canvas id="three-canvas" aria-hidden="true"></canvas>
+
+<script>
+  import * as THREE from 'three';
+
+  const canvas = document.getElementById('three-canvas') as HTMLCanvasElement;
+
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+
+  // Scene & Camera
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 5;
+
+  // ---- Particle Field ----
+  const PARTICLE_COUNT = 3000;
+  const positions = new Float32Array(PARTICLE_COUNT * 3);
+  const colors    = new Float32Array(PARTICLE_COUNT * 3);
+  const sizes     = new Float32Array(PARTICLE_COUNT);
+
+  const colorPalette = [
+    new THREE.Color('#c8a97e'),
+    new THREE.Color('#7e9fc8'),
+    new THREE.Color('#ffffff'),
+  ];
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    const i3 = i * 3;
+    positions[i3]     = (Math.random() - 0.5) * 20;
+    positions[i3 + 1] = (Math.random() - 0.5) * 20;
+    positions[i3 + 2] = (Math.random() - 0.5) * 20;
+
+    const c = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+    colors[i3]     = c.r;
+    colors[i3 + 1] = c.g;
+    colors[i3 + 2] = c.b;
+
+    sizes[i] = Math.random() * 2.5 + 0.5;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
+
+  const material = new THREE.PointsMaterial({
+    size: 0.04,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.75,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true,
+  });
+
+  const particles = new THREE.Points(geometry, material);
+  scene.add(particles);
+
+  // ---- Animated Lines (constellation effect) ----
+  const lineMaterial = new THREE.LineBasicMaterial({
+    color: 0xc8a97e,
+    transparent: true,
+    opacity: 0.05,
+  });
+
+  for (let i = 0; i < 80; i++) {
+    const pts = [
+      new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20),
+      new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20),
+    ];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+    scene.add(new THREE.Line(lineGeo, lineMaterial));
+  }
+
+  // ---- Mouse Interaction ----
+  let mouseX = 0, mouseY = 0;
+  window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth  - 0.5) * 0.5;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+  });
+
+  // ---- Resize ----
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ---- Scroll Zoom ----
+  let scrollProgress = 0;
+  function updateScrollProgress() {
+    const maxScroll = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+    scrollProgress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+  }
+  updateScrollProgress();
+  window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+  // ---- Animation Loop ----
+  const clock = new THREE.Clock();
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const elapsed = clock.getElapsedTime();
+
+    particles.rotation.y = elapsed * 0.03 + mouseX;
+    particles.rotation.x = elapsed * 0.015 - mouseY;
+
+    camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+
+    // Stronger scroll-based zoom: move camera closer as user scrolls
+    const targetZ = 5 - scrollProgress * 7.5;
+    camera.position.z += (targetZ - camera.position.z) * 0.08;
+    camera.lookAt(scene.position);
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+</script>

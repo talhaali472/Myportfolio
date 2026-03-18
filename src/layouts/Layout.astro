@@ -1,0 +1,138 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  gtmId?: string;
+  gaId?: string;
+}
+
+const {
+  title = 'Montfort Group — Global Commodity Trading',
+  description = 'A global commodity trading and asset investment company providing energy solutions with integrity and efficiency.',
+  ogImage = '/og-image.jpg',
+  gtmId = 'GTM-XXXXXXX',
+  gaId = 'G-XXXXXXXXXX',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Google Tag Manager -->
+    <script is:inline define:vars={{ gtmId }}>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer', gtmId);
+    </script>
+
+    <!-- Google Analytics 4 -->
+    <script is:inline define:vars={{ gaId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', gaId);
+    </script>
+    <script is:inline define:vars={{ gaId }} async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+
+  <body>
+    <!-- GTM noscript fallback -->
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+        height="0" width="0"
+        style="display:none;visibility:hidden"
+        title="GTM"
+      ></iframe>
+    </noscript>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-follower"></div>
+
+    <slot />
+
+    <!-- Lenis Smooth Scroll (global init) -->
+    <script>
+      import Lenis from 'lenis';
+
+      const lenis = new Lenis({
+        duration: 1.4,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+      });
+
+      function raf(time: number) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Expose globally for GSAP ScrollTrigger integration
+      (window as any).__lenis = lenis;
+    </script>
+
+    <!-- Nav scroll class -->
+    <script>
+      const nav = document.querySelector('.nav');
+      window.addEventListener('scroll', () => {
+        if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+      }, { passive: true });
+
+      // Custom Cursor Logic
+      const cursor = document.querySelector('.custom-cursor') as HTMLElement;
+      const follower = document.querySelector('.custom-cursor-follower') as HTMLElement;
+      
+      if (cursor && follower && window.matchMedia("(pointer: fine)").matches) {
+        document.addEventListener('mousemove', (e) => {
+          cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+          follower.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+        });
+
+        const hoverElements = document.querySelectorAll('a, button, input, textarea, .glass-card, .ai-trigger-container');
+        hoverElements.forEach(el => {
+          el.addEventListener('mouseenter', () => follower.classList.add('hover'));
+          el.addEventListener('mouseleave', () => follower.classList.remove('hover'));
+        });
+      }
+    </script>
+  </body>
+</html>
