@@ -205,13 +205,20 @@ const skills = [
       </div>
 
       <div class="glass-card" style="margin-top: 3rem; padding: 3rem; max-width: 700px;">
-        <form style="display: flex; flex-direction: column; gap: 1.5rem;" onsubmit="event.preventDefault(); alert('Form logic goes here!');">
+        <form
+          id="contact-form"
+          action="https://formsubmit.co/talhaali7271@gmail.com"
+          method="POST"
+          style="display: flex; flex-direction: column; gap: 1.5rem;"
+        >
+          <input type="text" name="_honey" style="display:none;">
+          <input type="hidden" name="_subject" value="New Portfolio Message">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <input type="text" placeholder="Name" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
-            <input type="email" placeholder="Email" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
+            <input type="text" name="name" placeholder="Name" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
+            <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
           </div>
-          <input type="text" placeholder="Subject" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
-          <textarea placeholder="Your Message" rows="5" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem; resize: vertical;"></textarea>
+          <input type="text" name="subject" placeholder="Subject" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem;">
+          <textarea name="message" placeholder="Your Message" rows="5" required style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--clr-border); border-radius: 0.5rem; color: #fff; font-family: var(--font-body); font-size: 0.95rem; resize: vertical;"></textarea>
           <button type="submit" class="btn btn-primary" style="align-self: flex-start; justify-content: center;">Send Message</button>
         </form>
       </div>
@@ -248,6 +255,13 @@ const skills = [
   <!-- GSAP Animations -->
   <GSAPAnimations />
 </Layout>
+
+<div class="toast" id="toast-success" role="status" aria-live="polite">
+  Message sent successfully. I will get back to you soon.
+</div>
+<div class="toast toast-error" id="toast-error" role="status" aria-live="polite">
+  Message failed. Please try again or email directly.
+</div>
 
 <style>
   /* --- Hero Screen Styles --- */
@@ -410,6 +424,35 @@ const skills = [
       margin-top: 2rem;
     }
   }
+
+  /* --- Toast --- */
+  .toast {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    padding: 0.9rem 1.25rem;
+    border-radius: 0.75rem;
+    background: rgba(13, 13, 20, 0.9);
+    border: 1px solid rgba(200, 169, 126, 0.35);
+    color: #fff;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease-smooth), transform 0.3s var(--ease-smooth);
+    z-index: 9999;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast-error {
+    border-color: rgba(255, 90, 90, 0.35);
+  }
 </style>
 
 <script>
@@ -421,6 +464,35 @@ const skills = [
       modal.classList.add('active');
       const input = document.getElementById('chat-input');
       if (input) setTimeout(() => input.focus(), 100);
+    }
+  });
+
+  // AJAX submit to avoid navigation + show toast
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const toastSuccess = document.getElementById('toast-success');
+  const toastError = document.getElementById('toast-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(form);
+      const resp = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' },
+      });
+
+      if (resp.ok) {
+        form.reset();
+        toastSuccess?.classList.add('show');
+        setTimeout(() => toastSuccess?.classList.remove('show'), 3500);
+      } else {
+        toastError?.classList.add('show');
+        setTimeout(() => toastError?.classList.remove('show'), 3500);
+      }
+    } catch {
+      toastError?.classList.add('show');
+      setTimeout(() => toastError?.classList.remove('show'), 3500);
     }
   });
 </script>
